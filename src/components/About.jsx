@@ -14,7 +14,7 @@ const About = () => {
 
             <p>
               <strong>PERKENALKAN kami</strong>, <strong>St. Herbert Aritonang, S.H., S. Sos</strong>, dan{' '}
-              <strong>Wanti Setianingsih, S. Kom., M. Ak., CTAP., ACA., CCP.</strong>, adalah Advokat,
+              <strong>Wanti Setianingsih, S.Kom., M.Ak., Ak., CTAP., ACA., CCP.</strong>, adalah Advokat,
               Kurator, Konsultan Pajak, Konsultan Kepabeanan, Mediator, dan praktisi hukum tata negara,
               pada Kantor Hukum <strong className="gold-text">HERBERT ARITONANG & PARTNERS</strong>.
             </p>

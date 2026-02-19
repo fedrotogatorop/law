@@ -1167,42 +1167,97 @@ a { text-decoration: none; color: inherit; transition: var(--transition); }
   border-color: transparent transparent transparent rgba(21,42,78,0.5);
 }
 
-.wanti-photo-wrapper {
-  width: 160px;
-  height: 200px;
-  margin: 0 auto 18px;
-  border-radius: 100px;
-  overflow: hidden;
-  border: 4px solid var(--gold);
+/* Hero Row: Taglines (Left) + Photo (Right) */
+.wanti-hero-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 60px; /* Increased gap to move photo to the right */
+  max-width: 900px;
+  margin: 0 auto 0; /* Reduced bottom margin */
   position: relative;
   z-index: 1;
+}
+
+.wanti-tagline {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem; /* Slightly larger for readability without box */
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: capitalize;
+  color: #fff; /* Changed to White for visibility on Navy */
+  text-align: left;
+  background: transparent; /* Made transparent */
+  padding: 10px 0 10px 24px; /* Removed box padding, kept left indentation */
+  border-radius: 0;
+  box-shadow: none; /* Removed shadow */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.wanti-tagline p { 
+  margin: 0; 
+  position: relative;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+.wanti-tagline p::before {
+  content: '•';
+  position: absolute;
+  left: -24px;
+  color: var(--gold); /* Gold bullet points like first picture */
+  font-size: 1.4rem;
+  line-height: 0.8;
+  top: 1px;
+}
+
+.wanti-photo-wrapper {
+  width: 260px; /* Keep dimensions */
+  height: 340px;
+  border-radius: 30px; /* Changed from 130px to 30px for "full picture" / "good shape" */
+  overflow: hidden;
+  border: 5px solid var(--gold);
+  background: var(--navy-dark);
+  flex-shrink: 0;
+  margin: 0;
+  margin-left: 20px;
 }
 .wanti-photo-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: top center;
+  object-position: center 20%;
 }
 
 .wanti-name {
   font-family: 'Playfair Display', serif;
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 800;
   color: #fff;
-  letter-spacing: 2px;
-  margin-bottom: 4px;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-top: 25px; /* Increased space (positive value) */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
-.wanti-tagline {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--gold);
-  position: relative;
-  z-index: 1;
+
+/* Mobile Responsiveness for new layout */
+@media (max-width: 768px) {
+  .wanti-hero-row {
+    flex-direction: column-reverse; /* Photo top, text bottom? Or text top? Usually photo top on mobile. */
+    flex-direction: column;
+    gap: 20px;
+  }
+  .wanti-tagline {
+    text-align: center;
+    background: transparent;
+    color: var(--gold); /* Revert to gold on transparent bg for mobile readability? Or keep card style */
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+  .wanti-photo-wrapper {
+    width: 200px; height: 260px;
+  }
 }
 
 .wanti-body {

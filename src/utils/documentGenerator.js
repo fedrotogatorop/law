@@ -26,6 +26,7 @@ async function loadImage(url) {
 const NAVY = [21, 42, 78];
 const NAVY_DARK = [10, 22, 40];
 const TEAL = [30, 80, 100];
+const MAROON = [128, 0, 0];
 const GOLD = [201, 168, 76];
 const WHITE = [255, 255, 255];
 const BROWN_BG = [44, 30, 20];
@@ -138,7 +139,10 @@ function drawFirmName(doc, cx, y, large) {
 // =============================================
 // Helper: Crop image to Oval (Ellipse)
 // =============================================
-function cropToOval(base64) {
+// =============================================
+// Helper: Crop image to Rounded Rect
+// =============================================
+function cropToRoundedRect(base64, radius = 40) {
   return new Promise((resolve) => {
     if (!base64) return resolve(null);
     const img = new Image();
@@ -150,10 +154,22 @@ function cropToOval(base64) {
       canvas.height = h;
       const ctx = canvas.getContext('2d');
       
-      // Draw oval clip
+      // Draw rounded rect clip
       ctx.beginPath();
-      // ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle)
-      ctx.ellipse(w / 2, h / 2, w / 2, h / 2, 0, 0, 2 * Math.PI);
+      // Scale radius relative to image size if needed, or stick to fixed ratio
+      // For a print quality, radius needs to be proportional. Let's start with a safe relative radius.
+      const r = Math.min(w, h) * 0.15; // 15% rounding
+      
+      ctx.moveTo(r, 0);
+      ctx.lineTo(w - r, 0);
+      ctx.quadraticCurveTo(w, 0, w, r);
+      ctx.lineTo(w, h - r);
+      ctx.quadraticCurveTo(w, h, w - r, h);
+      ctx.lineTo(r, h);
+      ctx.quadraticCurveTo(0, h, 0, h - r);
+      ctx.lineTo(0, r);
+      ctx.quadraticCurveTo(0, 0, r, 0);
+      
       ctx.closePath();
       ctx.clip();
       
@@ -180,14 +196,14 @@ export const generatePDF = async () => {
   try {
     const results = await Promise.all([
       loadImage('/herbert.jpg'),
-      loadImage('/wanti.jpg'),
+      loadImage('/wanti_new.jpg'),
       loadImage('/logos.png'),
     ]);
     herbertImg = results[0];
     
-    // Crop Wanti's image to oval
+    // Crop Wanti's image to rounded rect
     const wantiRaw = results[1];
-    wantiImg = await cropToOval(wantiRaw);
+    wantiImg = await cropToRoundedRect(wantiRaw);
     
     logoImg = results[2];
 
@@ -612,14 +628,15 @@ export const generatePDF = async () => {
   doc.addPage();
 
   // Navy blue header background (top 100mm)
-  const headerH = 95;
+  // Navy blue header background (top 100mm)
+  const headerH = 120;
   doc.setFillColor(...NAVY);
   doc.rect(0, 0, pw, headerH, 'F');
 
   // Left side decorative triangles
-  doc.setFillColor(...TEAL);
+  doc.setFillColor(...MAROON);
   doc.triangle(0, 0, 40, 0, 0, 55, 'F');
-  doc.setFillColor(...NAVY_DARK);
+  doc.setFillColor(...MAROON);
   doc.triangle(0, 0, 28, 0, 0, 38, 'F');
 
   // Gold lines on left
@@ -630,14 +647,15 @@ export const generatePDF = async () => {
   doc.line(0, 61, 46, 0);
 
   // Left side geometric shapes along the navy edge
-  doc.setFillColor(15, 32, 58);
+  // Left side geometric shapes along the navy edge
+  doc.setFillColor(...MAROON);
   doc.triangle(0, 70, 12, 85, 0, 100, 'F');
   doc.triangle(0, 110, 8, 120, 0, 130, 'F');
 
   // Bottom-right corner decoration
   doc.setFillColor(...NAVY);
   doc.triangle(pw, ph, pw - 50, ph, pw, ph - 45, 'F');
-  doc.setFillColor(...TEAL);
+  doc.setFillColor(...MAROON);
   doc.triangle(pw, ph, pw - 35, ph, pw, ph - 30, 'F');
   doc.setDrawColor(...GOLD);
   doc.setLineWidth(1);
@@ -648,98 +666,113 @@ export const generatePDF = async () => {
   // Right-side geometric
   doc.setFillColor(...NAVY);
   doc.triangle(pw, 80, pw - 30, headerH, pw, headerH, 'F');
-  doc.setFillColor(...TEAL);
+  doc.setFillColor(...MAROON);
   doc.triangle(pw, 85, pw - 20, headerH, pw, headerH, 'F');
 
-  // ---- Photo in navy header ----
-  y = 12;
-  const wPhotoW = 48;
-  const wPhotoH = 58;
-  const wPhotoX = cx - wPhotoW / 2;
+  // ---- Photo and Taglines in navy header (Hero Row Layout) ----
+  y = 25; 
+  
+  // Photo positions
+  const wPhotoW = 65; // Bigger picture
+  const wPhotoH = 80; 
+  const wPhotoX = cx + 15; 
+  const photoY = y;
 
+  // NAME (Black signed) - Above picture, aligned Right to match photo edge
+  doc.setFontSize(14); // Slightly bigger (14) as requested before meant "bigger picture", but let's keep name prominent
+  doc.setTextColor(...WHITE);
+  doc.setFont('times', 'bold');
+  // Align right to the edge of the photo
+  doc.text('WANTI SETIANINGSIH, S.Kom., M.Ak., Ak., CTAP., ACA., CCP.', wPhotoX + wPhotoW, photoY - 10, { align: 'right' });
+
+  // Taglines (Red signed)
+  const taglines = [
+    'Tax & Customs Strategic Advisor',
+    'Audit & Regulatory Specialist',
+    'Academic Professional'
+  ];
+
+  const tagBoxX = cx - 60; 
+  const tagBoxY = photoY + 25; 
+
+  doc.setFont('times', 'bold');
+  doc.setFontSize(11); 
+  
+  let ty = tagBoxY;
+  taglines.forEach(tag => {
+    // Gold Bullet
+    doc.setTextColor(...GOLD);
+    doc.text('•', tagBoxX, ty);
+    
+    // White Text
+    doc.setTextColor(255, 255, 255); 
+    doc.text(tag, tagBoxX + 6, ty);
+    ty += 9;
+  });
+
+  // Photo (Right side)
   if (wantiImg) {
     try {
-      // Image is already cropped to oval
-      doc.addImage(wantiImg, wPhotoX, y, wPhotoW, wPhotoH);
+      // Image is already cropped
+      doc.addImage(wantiImg, 'PNG', wPhotoX, photoY, wPhotoW, wPhotoH);
       
-      // Oval border
-      const rx = wPhotoW / 2;
-      const ry = wPhotoH / 2;
-      const cxPhoto = wPhotoX + rx;
-      const cyPhoto = y + ry;
-      
+      // Rounded Rect border (GOLD)
       doc.setDrawColor(...GOLD);
       doc.setLineWidth(1.5);
-      doc.ellipse(cxPhoto, cyPhoto, rx, ry, 'S');
+      doc.roundedRect(wPhotoX, photoY, wPhotoW, wPhotoH, 6, 6, 'S');
     } catch (e) {
       console.warn('[PDF] Wanti photo embed failed:', e);
     }
   } else {
-    // Fallback oval placeholder
-    const rx = wPhotoW / 2;
-    const ry = wPhotoH / 2;
-    const cxPhoto = wPhotoX + rx;
-    const cyPhoto = y + ry;
-    
+    // Fallback rounded rect placeholder
     doc.setFillColor(30, 50, 80);
-    doc.ellipse(cxPhoto, cyPhoto, rx, ry, 'F');
+    doc.roundedRect(wPhotoX, photoY, wPhotoW, wPhotoH, 6, 6, 'F');
     doc.setFontSize(24);
     doc.setTextColor(...GOLD);
     doc.setFont('times', 'bold');
-    doc.text('WS', cxPhoto, cyPhoto + 8, { align: 'center' });
+    doc.text('WS', wPhotoX + wPhotoW / 2, photoY + wPhotoH / 2, { align: 'center', baseline: 'middle' });
   }
 
-  // Name below photo (still in navy area)
-  y += wPhotoH + 6;
-  doc.setFontSize(10);
-  doc.setTextColor(...WHITE);
-  doc.setFont('times', 'bold');
-  doc.text('WANTI SETIANINGSIH, S.KOM., M.AK., CTAP., ACA., CCP.', cx, y, { align: 'center' });
-  y += 5;
-
-  doc.setFontSize(6);
-  doc.setTextColor(...GOLD);
-  doc.setFont('times', 'bold');
-  doc.text('TAX & CUSTOMS STRATEGIC ADVISOR | AUDIT & REGULATORY SPECIALIST | ACADEMIC PROFESSIONAL', cx, y, { align: 'center' });
+  // (Name block removed from here)
 
   // ---- White body content ----
   y = headerH + 8;
-  const wmL = 20; // wanti margin left
-  const wmR = 18;
+  const wmL = 20; 
+  const wmR = 22; // Slightly increased right margin to be safe
   const wcw = pw - wmL - wmR;
 
-  doc.setFontSize(8.5);
+  doc.setFontSize(8); // Reduced font size to fit
   doc.setFont('times', 'normal');
   doc.setTextColor(...TEXT);
 
   const wi1 = 'Wanti Setianingsih merupakan praktisi perpajakan dan kepabeanan dengan latar belakang akademis yang kuat serta pengalaman profesional yang komprehensif di bidang audit, regulasi fiskal, dan tata kelola perusahaan. Beliau memadukan ketajaman analitis, kedalaman konseptual, dan pengalaman lapangan dalam memberikan solusi hukum dan perpajakan yang terukur, strategis, serta berorientasi pada mitigasi risiko jangka panjang.';
   const wi1L = doc.splitTextToSize(wi1, wcw);
   doc.text(wi1L, wmL, y);
-  y += wi1L.length * 3.8 + 2;
+  y += wi1L.length * 3.4 + 2; // Compact spacing
 
   const wi2 = 'Sebagai akademisi sekaligus praktisi, Wanti memiliki perspektif menyeluruh dalam memahami dinamika regulasi, kepatuhan fiskal, dan struktur bisnis yang kompleks, baik untuk entitas nasional maupun perusahaan swasta asing.';
   const wi2L = doc.splitTextToSize(wi2, wcw);
   doc.text(wi2L, wmL, y);
-  y += wi2L.length * 3.8 + 5;
+  y += wi2L.length * 3.4 + 4; 
 
   // PROFESSIONAL EXPERIENCE
-  doc.setFontSize(10);
+  doc.setFontSize(9);
   doc.setFont('times', 'bold');
   doc.setTextColor(...NAVY_DARK);
   doc.text('PROFESSIONAL EXPERIENCE', wmL, y);
   doc.setDrawColor(...GOLD);
   doc.setLineWidth(0.5);
   doc.line(wmL, y + 1.5, wmL + doc.getTextWidth('PROFESSIONAL EXPERIENCE'), y + 1.5);
-  y += 6;
+  y += 5; 
 
   const profExp = [
-    { title: 'Director – PT Yong Sheng Packaging (2025 – Present)', desc: 'Memimpin pengelolaan strategis perusahaan serta memastikan kepatuhan fiskal dan operasional sesuai regulasi kepabeanan dan perpajakan.' },
-    { title: 'HR & Corporate Compliance – PT Hao Sheng International (2019 – Present)', desc: 'Mengelola aspek kepatuhan internal, hubungan industrial, serta penguatan sistem kontrol dan tata kelola perusahaan.' },
-    { title: 'Senior Auditor – KAP Saut M. Partuaon (2025 – Present)', desc: 'Melaksanakan audit laporan keuangan serta evaluasi kepatuhan terhadap standar akuntansi dan regulasi perpajakan.' },
-    { title: 'Lecturer – Universitas Respati Indonesia (2016 – Present)', desc: 'Mengampu bidang Sistem Informasi serta membangun integrasi antara sistem digital dan tata kelola keuangan modern. Beliau juga aktif sebagai praktisi perpajakan dan kepabeanan, serta tergabung dalam asosiasi profesi seperti PERKOPPI, PKKPI, dan PSI.' },
+    { title: 'Direktur – PT Yong Sheng Packaging (2025 – Sekarang)', desc: 'Memimpin pengelolaan strategis perusahaan serta memastikan kepatuhan fiskal dan operasional sesuai regulasi kepabeanan dan perpajakan.' },
+    { title: 'HRD – PT Hao Sheng International (2019 – Sekarang)', desc: 'Mengelola aspek kepatuhan internal, hubungan industrial, serta penguatan sistem kontrol dan tata kelola perusahaan.' },
+    { title: 'Senior Auditor – KAP Saut M. Partuaon (2025 – Sekarang)', desc: 'Melaksanakan audit laporan keuangan serta evaluasi kepatuhan terhadap standar akuntansi dan regulasi perpajakan.' },
+    { title: 'Dosen – Universitas Respati Indonesia (2016 – Sekarang)', desc: 'Mengampu mata kuliah dalam bidang Sistem Informasi yang membangun integrasi antara sistem digital dan tata kelola keuangan modern. Beliau juga aktif sebagai praktisi perpajakan dan kepabeanan, serta tergabung dalam asosiasi profesi seperti IAPI, IAI, PERKOPPI, PKKPI, dan P5I.' },
   ];
 
-  doc.setFontSize(8.5);
+  doc.setFontSize(8);
   profExp.forEach((exp) => {
     doc.setFont('times', 'bold');
     doc.setTextColor(...NAVY_DARK);
@@ -749,62 +782,62 @@ export const generatePDF = async () => {
     doc.setDrawColor(...TEXT);
     doc.setLineWidth(0.2);
     doc.line(wmL, y + 0.8, wmL + firstLineW, y + 0.8);
-    y += tL.length * 3.8 + 1;
+    y += tL.length * 3.4 + 1;
 
     doc.setFont('times', 'normal');
     doc.setTextColor(...TEXT);
     const dL = doc.splitTextToSize(exp.desc, wcw);
     doc.text(dL, wmL, y);
-    y += dL.length * 3.8 + 3.5;
+    y += dL.length * 3.4 + 2.5; 
   });
 
   y += 2;
 
-  // CORE EXPERTISE
-  doc.setFontSize(10);
+  // KEMAMPUAN
+  doc.setFontSize(9);
   doc.setFont('times', 'bold');
   doc.setTextColor(...NAVY_DARK);
-  doc.text('CORE EXPERTISE', wmL, y);
+  doc.text('KEMAMPUAN', wmL, y);
   doc.setDrawColor(...GOLD);
   doc.setLineWidth(0.5);
-  doc.line(wmL, y + 1.5, wmL + doc.getTextWidth('CORE EXPERTISE'), y + 1.5);
-  y += 6;
+  doc.line(wmL, y + 1.5, wmL + doc.getTextWidth('KEMAMPUAN'), y + 1.5);
+  y += 5;
 
-  doc.setFontSize(8.5);
+  doc.setFontSize(8);
   doc.setFont('times', 'normal');
   doc.setTextColor(...TEXT);
   const expertise = [
-    'Tax Compliance & Dispute Strategy',
-    'Customs Regulatory Advisory & Risk Mitigation',
-    'Financial Audit & Fiscal Reconciliation',
-    'Corporate Governance & Internal Control Strengthening',
-    'Regulatory Risk Mapping & Preventive Legal Structuring',
-    'Strategic Tax Planning & Business Structuring',
-    'Litigation & Non-Litigation Support in Fiscal Matters',
+    'Strategi Kepatuhan Pajak dan Penanganan Sengketa',
+    'Konsultasi Regulasi Kepabeanan dan Mitigasi Risiko',
+    'Audit Keuangan dan Rekonsiliasi Fiskal',
+    'Penguatan Tata Kelola Perusahaan dan Sistem Pengendalian Internal',
+    'Pemetaan Risiko Regulasi dan Perancangan Struktur Hukum Preventif',
+    'Perencanaan Pajak Strategis dan Penataan Struktur Bisnis',
+    'Pendampingan Litigasi dan Non-Litigasi di Bidang Perpajakan',
   ];
   expertise.forEach((item) => {
     doc.text('•  ' + item, wmL + 2, y);
-    y += 4.5;
+    y += 4;
   });
-  y += 3;
+  y += 2;
 
   // PROFESSIONAL APPROACH
-  doc.setFontSize(10);
+  doc.setFontSize(9);
   doc.setFont('times', 'bold');
   doc.setTextColor(...NAVY_DARK);
   doc.text('PROFESSIONAL APPROACH', wmL, y);
   doc.setDrawColor(...GOLD);
   doc.setLineWidth(0.5);
   doc.line(wmL, y + 1.5, wmL + doc.getTextWidth('PROFESSIONAL APPROACH'), y + 1.5);
-  y += 6;
+  y += 5;
 
-  doc.setFontSize(8.5);
+  doc.setFontSize(8);
   doc.setFont('times', 'normal');
   doc.setTextColor(...TEXT);
   const appIntro = 'Wanti Setianingsih dikenal memiliki pendekatan yang sistematis, presisi dalam analisis, dan kemampuan merancang solusi yang berbasis kepastian hukum serta efisiensi fiskal. Dengan kombinasi pengalaman praktik dan penguatan akademik, beliau memberikan nilai tambah berupa:';
   const appL = doc.splitTextToSize(appIntro, wcw);
   doc.text(appL, wmL, y);
-  y += appL.length * 3.8 + 3;
+  y += appL.length * 3.4 + 2;
 
   const approaches = [
     'Strategi preventif untuk meminimalkan potensi sengketa;',
@@ -814,7 +847,7 @@ export const generatePDF = async () => {
   ];
   approaches.forEach((item) => {
     doc.text('•  ' + item, wmL + 2, y);
-    y += 4.5;
+    y += 4;
   });
   y += 2;
 

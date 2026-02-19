@@ -108,87 +108,79 @@ const Team = () => {
               ============================================= */}
           <div className="profile-card wanti-card">
             {/* HEADER: Navy blue with photo */}
+            {/* HEADER: Navy blue with photo */}
             <div className="wanti-header">
-              <div className="wanti-photo-wrapper">
-                <img src="/wanti.jpg" alt="Wanti Setianingsih" />
+              <div className="wanti-hero-row">
+                <div className="wanti-tagline">
+                  <p>Tax & Customs Strategic Advisor</p>
+                  <p>Audit & Regulatory Specialist</p>
+                  <p>Academic Professional</p>
+                </div>
+                <div className="wanti-photo-wrapper">
+                  <img src="/wanti_new.jpg" alt="Wanti Setianingsih" />
+                </div>
               </div>
-              <h3 className="wanti-name">WANTI SETIANINGSIH, S.KOM., M.AK., CTAP., ACA., CCP.</h3>
-              <p className="wanti-tagline">
-                Tax & Customs Strategic Advisor | Audit & Regulatory Specialist | Academic Professional
-              </p>
+              <h3 className="wanti-name">WANTI SETIANINGSIH, S.Kom., M.Ak., Ak., CTAP., ACA., CCP.</h3>
             </div>
 
             {/* BODY: White content area */}
             <div className="wanti-body">
               <p className="profile-desc">
-                Wanti Setianingsih merupakan praktisi perpajakan dan kepabeanan dengan latar belakang
-                akademis yang kuat serta pengalaman profesional yang komprehensif di bidang audit,
-                regulasi fiskal, dan tata kelola perusahaan. Beliau memadukan ketajaman analitis,
-                kedalaman konseptual, dan pengalaman lapangan dalam memberikan solusi hukum dan
-                perpajakan yang terukur, strategis, serta berorientasi pada mitigasi risiko jangka panjang.
+                Wanti Setianingsih merupakan praktisi perpajakan dan kepabeanan dengan latar belakang akademis yang kuat serta pengalaman profesional yang komprehensif di bidang audit, regulasi fiskal, dan tata kelola perusahaan. Beliau memadukan ketajaman analitis, kedalaman konseptual, dan pengalaman lapangan dalam memberikan solusi hukum dan perpajakan yang terukur, strategis, serta berorientasi pada mitigasi risiko jangka panjang.
               </p>
 
               <p className="profile-desc">
-                Sebagai akademisi sekaligus praktisi, Wanti memiliki perspektif menyeluruh dalam memahami
-                dinamika regulasi, kepatuhan fiskal, dan struktur bisnis yang kompleks, baik untuk entitas
-                nasional maupun perusahaan swasta asing.
+                Sebagai akademisi sekaligus praktisi, Wanti memiliki perspektif menyeluruh dalam memahami dinamika regulasi, kepatuhan fiskal, dan struktur bisnis yang kompleks, baik untuk entitas nasional maupun perusahaan swasta asing.
               </p>
 
               {/* PROFESSIONAL EXPERIENCE */}
               <h4 className="wanti-section-title">PROFESSIONAL EXPERIENCE</h4>
 
               <div className="wanti-exp-item">
-                <p className="wanti-exp-title">Director – PT Yong Sheng Packaging (2025 – Present)</p>
+                <p className="wanti-exp-title">Direktur – PT Yong Sheng Packaging (2025 – Sekarang)</p>
                 <p className="wanti-exp-desc">
-                  Memimpin pengelolaan strategis perusahaan serta memastikan kepatuhan fiskal dan
-                  operasional sesuai regulasi kepabeanan dan perpajakan.
+                  Memimpin pengelolaan strategis perusahaan serta memastikan kepatuhan fiskal dan operasional sesuai regulasi kepabeanan dan perpajakan.
                 </p>
               </div>
 
               <div className="wanti-exp-item">
-                <p className="wanti-exp-title">HR & Corporate Compliance – PT Hao Sheng International (2019 – Present)</p>
+                <p className="wanti-exp-title">HRD – PT Hao Sheng International (2019 – Sekarang)</p>
                 <p className="wanti-exp-desc">
-                  Mengelola aspek kepatuhan internal, hubungan industrial, serta penguatan sistem kontrol
-                  dan tata kelola perusahaan.
+                  Mengelola aspek kepatuhan internal, hubungan industrial, serta penguatan sistem kontrol dan tata kelola perusahaan.
                 </p>
               </div>
 
               <div className="wanti-exp-item">
-                <p className="wanti-exp-title">Senior Auditor – KAP Saut M. Partuaon (2025 – Present)</p>
+                <p className="wanti-exp-title">Senior Auditor – KAP Saut M. Partuaon (2025 – Sekarang)</p>
                 <p className="wanti-exp-desc">
-                  Melaksanakan audit laporan keuangan serta evaluasi kepatuhan terhadap standar akuntansi
-                  dan regulasi perpajakan.
+                  Melaksanakan audit laporan keuangan serta evaluasi kepatuhan terhadap standar akuntansi dan regulasi perpajakan.
                 </p>
               </div>
 
               <div className="wanti-exp-item">
-                <p className="wanti-exp-title">Lecturer – Universitas Respati Indonesia (2016 – Present)</p>
+                <p className="wanti-exp-title">Dosen – Universitas Respati Indonesia (2016 – Sekarang)</p>
                 <p className="wanti-exp-desc">
-                  Mengampu bidang Sistem Informasi serta membangun integrasi antara sistem digital dan
-                  tata kelola keuangan modern. Beliau juga aktif sebagai praktisi perpajakan dan kepabeanan,
-                  serta tergabung dalam asosiasi profesi seperti PERKOPPI, PKKPI, dan PSI.
+                  Mengampu mata kuliah dalam bidang Sistem Informasi yang membangun integrasi antara sistem digital dan tata kelola keuangan modern.
+                  Beliau juga aktif sebagai praktisi perpajakan dan kepabeanan, serta tergabung dalam asosiasi profesi seperti IAPI, IAI, PERKOPPI, PKKPI, dan P5I.
                 </p>
               </div>
 
-              {/* CORE EXPERTISE */}
-              <h4 className="wanti-section-title">CORE EXPERTISE</h4>
+              {/* KEMAMPUAN */}
+              <h4 className="wanti-section-title">KEMAMPUAN</h4>
               <ul>
-                <li>Tax Compliance & Dispute Strategy</li>
-                <li>Customs Regulatory Advisory & Risk Mitigation</li>
-                <li>Financial Audit & Fiscal Reconciliation</li>
-                <li>Corporate Governance & Internal Control Strengthening</li>
-                <li>Regulatory Risk Mapping & Preventive Legal Structuring</li>
-                <li>Strategic Tax Planning & Business Structuring</li>
-                <li>Litigation & Non-Litigation Support in Fiscal Matters</li>
+                <li>Strategi Kepatuhan Pajak dan Penanganan Sengketa</li>
+                <li>Konsultasi Regulasi Kepabeanan dan Mitigasi Risiko</li>
+                <li>Audit Keuangan dan Rekonsiliasi Fiskal</li>
+                <li>Penguatan Tata Kelola Perusahaan dan Sistem Pengendalian Internal</li>
+                <li>Pemetaan Risiko Regulasi dan Perancangan Struktur Hukum Preventif</li>
+                <li>Perencanaan Pajak Strategis dan Penataan Struktur Bisnis</li>
+                <li>Pendampingan Litigasi dan Non-Litigasi di Bidang Perpajakan</li>
               </ul>
 
               {/* PROFESSIONAL APPROACH */}
               <h4 className="wanti-section-title">PROFESSIONAL APPROACH</h4>
               <p className="profile-desc">
-                Wanti Setianingsih dikenal memiliki pendekatan yang sistematis, presisi dalam analisis,
-                dan kemampuan merancang solusi yang berbasis kepastian hukum serta efisiensi fiskal.
-                Dengan kombinasi pengalaman praktik dan penguatan akademik, beliau memberikan nilai
-                tambah berupa:
+                Wanti Setianingsih dikenal memiliki pendekatan yang sistematis, presisi dalam analisis, dan kemampuan merancang solusi yang berbasis kepastian hukum serta efisiensi fiskal. Dengan kombinasi pengalaman praktik dan penguatan akademik, beliau memberikan nilai tambah berupa:
               </p>
               <ul>
                 <li>Strategi preventif untuk meminimalkan potensi sengketa;</li>
@@ -197,8 +189,7 @@ const Team = () => {
                 <li>Pendampingan strategis pada pemeriksaan, keberatan, dan sengketa kepabeanan.</li>
               </ul>
               <p className="profile-desc" style={{ marginTop: '14px' }}>
-                Komitmen profesionalnya berorientasi pada stabilitas hukum, efisiensi fiskal, dan
-                keberlanjutan usaha klien.
+                Komitmen profesionalnya berorientasi pada stabilitas hukum, efisiensi fiskal, dan keberlanjutan usaha klien.
               </p>
             </div>
           </div>
